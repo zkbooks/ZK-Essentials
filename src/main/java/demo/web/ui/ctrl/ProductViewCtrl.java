@@ -91,7 +91,7 @@ public class ProductViewCtrl extends SelectorComposer<Div> {
 		}
 
 		ShoppingEvent se = new ShoppingEvent("shopping event");
-		se.setShoppingEventType(ShoppingEvent.EventType.ADD);
+		se.setShoppingEventType(ShoppingEvent.EventType.ADDTOCART);
 		eq.publish(se);
 
 	}

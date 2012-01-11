@@ -31,7 +31,7 @@ public class ShoppingCartViewModel {
 		eq.subscribe(new EventListener<Event>() {
 			public void onEvent(Event event) throws Exception {
 				if((event instanceof ShoppingEvent) && 
-				   ((ShoppingEvent)event).getShoppingEventType().equals(ShoppingEvent.EventType.ADD)) {
+				   ((ShoppingEvent)event).getShoppingEventType().equals(ShoppingEvent.EventType.ADDTOCART)) {
 					binder.notifyChange(ShoppingCartViewModel.this, "cartItems");
 				}
 			}
@@ -72,7 +72,7 @@ public class ShoppingCartViewModel {
 		orderdao.createOrder(UserUtils.getCurrentUserId(), getCartItems(), getOrderNote());
 		
 		ShoppingEvent se = new ShoppingEvent("shopping event");
-		se.setShoppingEventType(ShoppingEvent.EventType.CREATE);
+		se.setShoppingEventType(ShoppingEvent.EventType.CREATEORDER);
 		eq.publish(se);
 		
 		clearOrders();

@@ -14,7 +14,7 @@ public class ShoppingEvent extends Event {
 	}
 	
 	public enum EventType {
-		CREATE, CANCEL, ADD
+		CREATEORDER, ADDTOCART
 	}
 	
 	private EventType shoppingEventType;

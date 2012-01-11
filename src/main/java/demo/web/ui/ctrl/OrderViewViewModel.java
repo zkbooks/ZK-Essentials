@@ -30,7 +30,7 @@ public class OrderViewViewModel  {
 		eq.subscribe(new EventListener<Event>() {
 			public void onEvent(Event event) throws Exception {
 				if((event instanceof ShoppingEvent) && 
-				   ((ShoppingEvent)event).getShoppingEventType().equals(ShoppingEvent.EventType.CREATE)) {
+				   ((ShoppingEvent)event).getShoppingEventType().equals(ShoppingEvent.EventType.CREATEORDER)) {
 					binder.notifyChange(OrderViewViewModel.this, "orders");					
 				}
 			}
