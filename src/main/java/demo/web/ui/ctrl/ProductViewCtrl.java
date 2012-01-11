@@ -84,7 +84,7 @@ public class ProductViewCtrl extends SelectorComposer<Div> {
 		ProductOrder po = (ProductOrder) fe.getTarget();*/
 
 		try {
-			UserUtils.getShoppingCart(Executions.getCurrent().getSession())
+			UserUtils.getShoppingCart()
 					.add(po.getProduct(), po.getQuantity());
 		} catch (OverQuantityException e) {
 			po.setError(e.getMessage());

@@ -58,11 +58,11 @@ public class ShoppingCartViewModel {
 	}
 
 	public List<CartItem> getCartItems() {
-		return UserUtils.getShoppingCart(Executions.getCurrent().getSession()).getItems();
+		return UserUtils.getShoppingCart().getItems();
 	}
 	
 	public ShoppingCart getShoppingCart() {
-		return UserUtils.getShoppingCart(Executions.getCurrent().getSession());
+		return UserUtils.getShoppingCart();
 	}
 	
 	@Command("submitOrder")

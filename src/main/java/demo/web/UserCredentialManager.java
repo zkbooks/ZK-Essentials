@@ -1,5 +1,6 @@
 package demo.web;
 
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.Sessions;
 
@@ -25,15 +26,12 @@ public class UserCredentialManager {
 	}
 
 	public static UserCredentialManager getIntance() {
-		return getIntance(Sessions.getCurrent());
-	}
-
-	public static UserCredentialManager getIntance(Session zkSession) {
-		synchronized (zkSession) {
-			UserCredentialManager userModel = (UserCredentialManager) zkSession
+		Session session = Executions.getCurrent().getSession();
+		synchronized (session) {
+			UserCredentialManager userModel = (UserCredentialManager) session
 					.getAttribute(KEY_USER_MODEL);
 			if (userModel == null) {
-				zkSession.setAttribute(KEY_USER_MODEL,
+				session.setAttribute(KEY_USER_MODEL,
 						userModel = new UserCredentialManager());
 			}
 			return userModel;
