@@ -37,7 +37,7 @@ public class ProductViewCtrl extends SelectorComposer<Div> {
 	private static final long serialVersionUID = -4327599559929787819L;
 
 	private final EventQueue<Event> eq = EventQueues.lookup("shoppingQueue",
-			EventQueues.SESSION, true);
+			EventQueues.DESKTOP, true);
 
 	@Wire
 	private Grid prodGrid;

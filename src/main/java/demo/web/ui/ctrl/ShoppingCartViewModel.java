@@ -22,7 +22,7 @@ import demo.web.ShoppingCart;
 
 public class ShoppingCartViewModel {
 	
-	private final EventQueue<Event> eq = EventQueues.lookup("shoppingQueue", EventQueues.SESSION, true);
+	private final EventQueue<Event> eq = EventQueues.lookup("shoppingQueue", EventQueues.DESKTOP, true);
 
 	@Init
 	public void init(@ContextParam(ContextType.BIND_CONTEXT) BindContext ctx) {

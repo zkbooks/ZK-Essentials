@@ -1,6 +1,5 @@
 <?page title="ZK Store"?>
 <?init class="demo.web.ui.WorkbenchInit" ?>
-<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 
 <?component name="productOrder" class="demo.web.ui.ctrl.ProductOrder" ?>
 
@@ -79,7 +78,7 @@
 						</listfooter>
 						<listfooter>
 							<button id="clearBtn" label="clear"
-								onClick="@command('clearItems')"
+								onClick="@command('clearOrders')"
 								disabled="@load(empty vm.cartItems)" />
 						</listfooter>
 					</listfoot>
