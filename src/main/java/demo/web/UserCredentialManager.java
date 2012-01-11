@@ -2,10 +2,8 @@ package demo.web;
 
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
-import org.zkoss.zk.ui.Sessions;
 
 import demo.model.DAOs;
-import demo.model.UserDAO;
 import demo.model.bean.User;
 
 /**

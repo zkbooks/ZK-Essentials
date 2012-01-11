@@ -2,7 +2,6 @@ package demo.web.ui.ctrl;
 
 import java.util.List;
 
-import org.zkoss.bind.BindContext;
 import org.zkoss.bind.Binder;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ContextParam;

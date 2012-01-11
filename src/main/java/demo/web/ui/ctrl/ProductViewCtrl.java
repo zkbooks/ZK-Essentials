@@ -3,7 +3,6 @@ package demo.web.ui.ctrl;
 import java.util.List;
 
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
@@ -19,7 +18,6 @@ import org.zkoss.zul.Grid;
 import org.zkoss.zul.ListModelList;
 
 import demo.model.DAOs;
-import demo.model.ProductDAO;
 import demo.model.bean.Product;
 import demo.web.OverQuantityException;
 
