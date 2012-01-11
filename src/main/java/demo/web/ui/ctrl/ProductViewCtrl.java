@@ -18,6 +18,7 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.ListModelList;
 
+import demo.model.DAOs;
 import demo.model.ProductDAO;
 import demo.model.bean.Product;
 import demo.web.OverQuantityException;
@@ -46,8 +47,7 @@ public class ProductViewCtrl extends SelectorComposer<Div> {
 	public void doAfterCompose(Div comp) throws Exception {
 		super.doAfterCompose(comp);
 
-		ProductDAO prodDao = new ProductDAO();
-		List<Product> prods = prodDao.findAllAvailable();
+		List<Product> prods = DAOs.getProductDAO().findAllAvailable();
 
 		ListModelList<Product> prodModel = new ListModelList<Product>(prods);
 		prodGrid.setModel(prodModel);
@@ -84,15 +84,13 @@ public class ProductViewCtrl extends SelectorComposer<Div> {
 		ProductOrder po = (ProductOrder) fe.getTarget();*/
 
 		try {
-			UserUtils.getShoppingCart(Executions.getCurrent().getSession())
+			UserUtils.getShoppingCart()
 					.add(po.getProduct(), po.getQuantity());
 		} catch (OverQuantityException e) {
 			po.setError(e.getMessage());
 		}
 
-		ShoppingEvent se = new ShoppingEvent("shopping event");
-		se.setShoppingEventType(ShoppingEvent.EventType.ADDTOCART);
-		eq.publish(se);
+		eq.publish(new ShoppingEvent(ShoppingEvent.Type.ADDTOCART));
 
 	}
 }

@@ -14,23 +14,21 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 
-import demo.model.OrderDAO;
+import demo.model.DAOs;
 import demo.model.bean.Order;
 
 public class OrderViewViewModel  {
 	private Order selectedItem;
-	private static final OrderDAO orderdao = new OrderDAO();
 	
 	private final EventQueue<Event> eq = EventQueues.lookup("shoppingQueue", EventQueues.DESKTOP, true);
 	
 	@Init
-	public void init(@ContextParam(ContextType.BIND_CONTEXT) BindContext ctx) {
-		final Binder binder = ctx.getBinder();
-		
+	public void init(@ContextParam(ContextType.BINDER) 
+			final Binder binder) {
 		eq.subscribe(new EventListener<Event>() {
 			public void onEvent(Event event) throws Exception {
 				if((event instanceof ShoppingEvent) && 
-				   ((ShoppingEvent)event).getShoppingEventType().equals(ShoppingEvent.EventType.CREATEORDER)) {
+				   ((ShoppingEvent)event).getType().equals(ShoppingEvent.Type.CREATEORDER)) {
 					binder.notifyChange(OrderViewViewModel.this, "orders");					
 				}
 			}
@@ -47,7 +45,7 @@ public class OrderViewViewModel  {
 	}
 	
 	public List<Order> getOrders() {
-		List<Order> orders = orderdao.findByUser(UserUtils.getCurrentUserId());
+		List<Order> orders = DAOs.getOrderDAO().findByUser(UserUtils.getCurrentUserId());
 		return orders;
 	}
 	
@@ -58,7 +56,7 @@ public class OrderViewViewModel  {
 			return;
 		}
 		
-		orderdao.cancelOrder(getSelectedItem().getId());
+		DAOs.getOrderDAO().cancelOrder(getSelectedItem().getId());
 		setSelectedItem(null);
 	}
 }
