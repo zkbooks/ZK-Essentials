@@ -90,9 +90,7 @@ public class ProductViewCtrl extends SelectorComposer<Div> {
 			po.setError(e.getMessage());
 		}
 
-		ShoppingEvent se = new ShoppingEvent("shopping event");
-		se.setShoppingEventType(ShoppingEvent.EventType.ADDTOCART);
-		eq.publish(se);
+		eq.publish(new ShoppingEvent(ShoppingEvent.EventType.ADDTOCART));
 
 	}
 }

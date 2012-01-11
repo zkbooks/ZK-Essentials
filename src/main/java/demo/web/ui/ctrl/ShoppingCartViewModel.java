@@ -71,9 +71,7 @@ public class ShoppingCartViewModel {
 		OrderDAO orderdao = new OrderDAO();
 		orderdao.createOrder(UserUtils.getCurrentUserId(), getCartItems(), getOrderNote());
 		
-		ShoppingEvent se = new ShoppingEvent("shopping event");
-		se.setShoppingEventType(ShoppingEvent.EventType.CREATEORDER);
-		eq.publish(se);
+		eq.publish(new ShoppingEvent(ShoppingEvent.EventType.CREATEORDER));
 		
 		clearOrders();
 	}

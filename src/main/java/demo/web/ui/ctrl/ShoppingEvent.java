@@ -9,8 +9,9 @@ public class ShoppingEvent extends Event {
 	 */
 	private static final long serialVersionUID = -6082843618140247037L;
 
-	public ShoppingEvent(String name) {
-		super(name);
+	public ShoppingEvent(EventType type) {
+		super("onShopping");
+		shoppingEventType = type;
 	}
 	
 	public enum EventType {
@@ -21,9 +22,5 @@ public class ShoppingEvent extends Event {
 
 	public EventType getShoppingEventType() {
 		return shoppingEventType;
-	}
-
-	public void setShoppingEventType(EventType shoppingEventType) {
-		this.shoppingEventType = shoppingEventType;
 	}
 }
