@@ -24,9 +24,8 @@ public class OrderViewViewModel  {
 	private final EventQueue<Event> eq = EventQueues.lookup("shoppingQueue", EventQueues.DESKTOP, true);
 	
 	@Init
-	public void init(@ContextParam(ContextType.BIND_CONTEXT) BindContext ctx) {
-		final Binder binder = ctx.getBinder();
-		
+	public void init(@ContextParam(ContextType.BINDER) 
+			final Binder binder) {
 		eq.subscribe(new EventListener<Event>() {
 			public void onEvent(Event event) throws Exception {
 				if((event instanceof ShoppingEvent) && 
