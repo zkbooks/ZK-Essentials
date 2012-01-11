@@ -30,7 +30,7 @@ public class LoginViewCtrl extends SelectorComposer<Window> {
 	@Override
 	public void doAfterCompose(Window comp) throws Exception {
 		super.doAfterCompose(comp);
-		if (UserCredentialManager.getIntance(Executions.getCurrent().getSession()).isAuthenticated()) {
+		if (UserCredentialManager.getIntance().isAuthenticated()) {
 			Executions.getCurrent().sendRedirect("index.zul");
 		}
 		nameTxb.setFocus(true);
@@ -48,8 +48,7 @@ public class LoginViewCtrl extends SelectorComposer<Window> {
 	}
 
 	private void doLogin() {
-		UserCredentialManager mgmt = UserCredentialManager.getIntance(Sessions
-				.getCurrent());
+		UserCredentialManager mgmt = UserCredentialManager.getIntance();
 		mgmt.login(nameTxb.getValue(), passwordTxb.getValue());
 		if (mgmt.isAuthenticated()) {
 			Executions.getCurrent().sendRedirect("index.zul");

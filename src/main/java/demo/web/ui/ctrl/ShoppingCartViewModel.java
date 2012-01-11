@@ -16,6 +16,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 
+import demo.model.DAOs;
 import demo.model.OrderDAO;
 import demo.model.bean.CartItem;
 import demo.web.ShoppingCart;
@@ -25,13 +26,12 @@ public class ShoppingCartViewModel {
 	private final EventQueue<Event> eq = EventQueues.lookup("shoppingQueue", EventQueues.DESKTOP, true);
 
 	@Init
-	public void init(@ContextParam(ContextType.BIND_CONTEXT) BindContext ctx) {
-		final Binder binder = ctx.getBinder();
-		
+	public void init(@ContextParam(ContextType.BINDER) 
+			final Binder binder) {
 		eq.subscribe(new EventListener<Event>() {
 			public void onEvent(Event event) throws Exception {
 				if((event instanceof ShoppingEvent) && 
-				   ((ShoppingEvent)event).getShoppingEventType().equals(ShoppingEvent.EventType.ADDTOCART)) {
+				   ((ShoppingEvent)event).getType().equals(ShoppingEvent.Type.ADDTOCART)) {
 					binder.notifyChange(ShoppingCartViewModel.this, "cartItems");
 				}
 			}
@@ -58,22 +58,19 @@ public class ShoppingCartViewModel {
 	}
 
 	public List<CartItem> getCartItems() {
-		return UserUtils.getShoppingCart(Executions.getCurrent().getSession()).getItems();
+		return UserUtils.getShoppingCart().getItems();
 	}
 	
 	public ShoppingCart getShoppingCart() {
-		return UserUtils.getShoppingCart(Executions.getCurrent().getSession());
+		return UserUtils.getShoppingCart();
 	}
 	
 	@Command("submitOrder")
 	@NotifyChange({"cartItems", "shoppingCart", "orderNote"})
 	public void submitOrder() {
-		OrderDAO orderdao = new OrderDAO();
-		orderdao.createOrder(UserUtils.getCurrentUserId(), getCartItems(), getOrderNote());
+		DAOs.getOrderDAO().createOrder(UserUtils.getCurrentUserId(), getCartItems(), getOrderNote());
 		
-		ShoppingEvent se = new ShoppingEvent("shopping event");
-		se.setShoppingEventType(ShoppingEvent.EventType.CREATEORDER);
-		eq.publish(se);
+		eq.publish(new ShoppingEvent(ShoppingEvent.Type.CREATEORDER));
 		
 		clearOrders();
 	}
