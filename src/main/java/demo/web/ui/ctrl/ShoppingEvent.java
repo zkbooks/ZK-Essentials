@@ -9,18 +9,18 @@ public class ShoppingEvent extends Event {
 	 */
 	private static final long serialVersionUID = -6082843618140247037L;
 
-	public ShoppingEvent(EventType type) {
+	public ShoppingEvent(Type type) {
 		super("onShopping");
-		shoppingEventType = type;
+		eventType = type;
 	}
 	
-	public enum EventType {
+	public enum Type {
 		CREATEORDER, ADDTOCART
 	}
 	
-	private EventType shoppingEventType;
+	private Type eventType;
 
-	public EventType getShoppingEventType() {
-		return shoppingEventType;
+	public Type getType() {
+		return eventType;
 	}
 }
