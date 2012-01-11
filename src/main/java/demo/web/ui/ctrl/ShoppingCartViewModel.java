@@ -16,6 +16,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 
+import demo.model.DAOs;
 import demo.model.OrderDAO;
 import demo.model.bean.CartItem;
 import demo.web.ShoppingCart;
@@ -67,8 +68,7 @@ public class ShoppingCartViewModel {
 	@Command("submitOrder")
 	@NotifyChange({"cartItems", "shoppingCart", "orderNote"})
 	public void submitOrder() {
-		OrderDAO orderdao = new OrderDAO();
-		orderdao.createOrder(UserUtils.getCurrentUserId(), getCartItems(), getOrderNote());
+		DAOs.getOrderDAO().createOrder(UserUtils.getCurrentUserId(), getCartItems(), getOrderNote());
 		
 		eq.publish(new ShoppingEvent(ShoppingEvent.Type.CREATEORDER));
 		

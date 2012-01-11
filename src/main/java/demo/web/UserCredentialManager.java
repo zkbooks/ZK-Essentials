@@ -4,6 +4,7 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.Sessions;
 
+import demo.model.DAOs;
 import demo.model.UserDAO;
 import demo.model.bean.User;
 
@@ -18,11 +19,9 @@ public class UserCredentialManager {
 	private static final String KEY_USER_MODEL = UserCredentialManager.class
 			.getName()
 			+ "_MODEL";
-	private UserDAO userDAO;
 	private User user;
 
 	private UserCredentialManager() {
-		userDAO = new UserDAO();
 	}
 
 	public static UserCredentialManager getIntance() {
@@ -39,7 +38,7 @@ public class UserCredentialManager {
 	}
 
 	public synchronized void login(String name, String password) {
-		User tempUser = userDAO.findUserByName(name);
+		User tempUser = DAOs.getUserDAO().findUserByName(name);
 		if (tempUser != null && tempUser.getPassword().equals(password)) {
 			user = tempUser;
 		} else {

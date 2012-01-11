@@ -14,12 +14,11 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 
-import demo.model.OrderDAO;
+import demo.model.DAOs;
 import demo.model.bean.Order;
 
 public class OrderViewViewModel  {
 	private Order selectedItem;
-	private static final OrderDAO orderdao = new OrderDAO();
 	
 	private final EventQueue<Event> eq = EventQueues.lookup("shoppingQueue", EventQueues.DESKTOP, true);
 	
@@ -46,7 +45,7 @@ public class OrderViewViewModel  {
 	}
 	
 	public List<Order> getOrders() {
-		List<Order> orders = orderdao.findByUser(UserUtils.getCurrentUserId());
+		List<Order> orders = DAOs.getOrderDAO().findByUser(UserUtils.getCurrentUserId());
 		return orders;
 	}
 	
@@ -57,7 +56,7 @@ public class OrderViewViewModel  {
 			return;
 		}
 		
-		orderdao.cancelOrder(getSelectedItem().getId());
+		DAOs.getOrderDAO().cancelOrder(getSelectedItem().getId());
 		setSelectedItem(null);
 	}
 }
