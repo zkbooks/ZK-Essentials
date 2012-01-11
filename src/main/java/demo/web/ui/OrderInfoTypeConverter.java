@@ -2,8 +2,9 @@ package demo.web.ui;
 
 import java.text.SimpleDateFormat;
 
+import org.zkoss.bind.BindContext;
+import org.zkoss.bind.Converter;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zkplus.databind.TypeConverter;
 
 import demo.model.bean.Order;
 
@@ -15,20 +16,16 @@ import demo.model.bean.Order;
  *         representation for a user
  * 
  */
-public class OrderInfoTypeConverter implements TypeConverter {
-
-	/*
-	 * Save
-	 */
-	public Object coerceToBean(Object val, Component comp) {
+public class OrderInfoTypeConverter implements Converter {
+	
+	//save
+	public Object coerceToBean(Object arg0, Component arg1, BindContext arg2) {
 		throw new UnsupportedOperationException();
 	}
-
-	/*
-	 * Load
-	 */
-	public Object coerceToUi(Object val, Component comp) {
-		Order order = (Order) val;
+	
+	//load
+	public Object coerceToUi(Object arg0, Component arg1, BindContext arg2) {
+		Order order = (Order) arg0;
 		String info = order.getStatus()
 				+ " : "
 				+ new SimpleDateFormat("yyyy/MM/dd hh:mm").format(order

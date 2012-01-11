@@ -17,6 +17,6 @@
 		</rows>
 
 	</grid>
-	<button id="confirmBtn" label="confirm" forward="onOK" />
+	<button id="confirmBtn" label="confirm" />
 	<label id="mesgLbl" />
 </window>

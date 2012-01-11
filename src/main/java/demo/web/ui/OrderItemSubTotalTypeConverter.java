@@ -1,7 +1,8 @@
 package demo.web.ui;
 
+import org.zkoss.bind.BindContext;
+import org.zkoss.bind.Converter;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zkplus.databind.TypeConverter;
 
 import demo.model.bean.OrderItem;
 
@@ -13,14 +14,14 @@ import demo.model.bean.OrderItem;
  *         representation for a user
  * 
  */
-public class OrderItemSubTotalTypeConverter implements TypeConverter {
+public class OrderItemSubTotalTypeConverter implements Converter {
 
-	public Object coerceToBean(Object val, Component comp) {
+	public Object coerceToBean(Object arg0, Component arg1, BindContext arg2) {
 		throw new UnsupportedOperationException();
 	}
 
-	public Object coerceToUi(Object val, Component comp) {
-		OrderItem item = (OrderItem) val;
+	public Object coerceToUi(Object arg0, Component arg1, BindContext arg2) {
+		OrderItem item = (OrderItem) arg0;
 		String subTotal = "$ " + (item.getQuantity() * item.getPrice());
 		return subTotal;
 	}
