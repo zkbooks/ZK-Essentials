@@ -2,11 +2,10 @@ package demo.web.ui.ctrl;
 
 import java.util.List;
 
+import org.zkoss.bind.BindUtils;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.EventQueue;
-import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.select.SelectorComposer;
@@ -34,9 +33,6 @@ public class ProductViewCtrl extends SelectorComposer<Div> {
 	 * 
 	 */
 	private static final long serialVersionUID = -4327599559929787819L;
-
-	private final EventQueue<Event> eq = EventQueues.lookup("shoppingQueue",
-			EventQueues.DESKTOP, true);
 
 	@Wire
 	private Grid prodGrid;
@@ -88,7 +84,6 @@ public class ProductViewCtrl extends SelectorComposer<Div> {
 			po.setError(e.getMessage());
 		}
 
-		eq.publish(new ShoppingEvent(ShoppingEvent.Type.ADDTOCART));
-
+		BindUtils.postGlobalCommand(null, null, "updateShoppingCart", null);
 	}
 }
