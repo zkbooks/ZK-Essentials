@@ -1,6 +1,7 @@
 <?page title="ZK Store"?>
 <?init class="demo.web.ui.WorkbenchInit" ?>
-<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+
+<?component name="productOrder" class="demo.web.ui.ctrl.ProductOrder" ?>
 
 <window title="You are using ZK: ${desktop.webApp.version}"
 	border="normal" width="100%" height="900px">
@@ -8,8 +9,7 @@
 	<borderlayout>
 
 		<center border="0">
-			<div id="PrdoDiv" style="background:#D9E5EF; height:100%"
-				apply="demo.web.ui.ctrl.ProductViewCtrl">
+			<div id="PrdoDiv" apply="demo.web.ui.ctrl.ProductViewCtrl">
 				<grid id="prodGrid">
 					<columns sizable="true">
 						<column image="/image/Bullet-10x10.png"
@@ -20,16 +20,30 @@
 						<column label="Arrive Date" width="110px" />
 						<column label="operation" />
 					</columns>
+					<template name="model">
+						<row value="${each}">
+							<image height="70px" width="70px"
+								src="${each.imgPath}" />
+							<label value="${each.name}" />
+							<label value="${each.price}" />
+							<label value="${each.quantity}" />
+							<label value="${each.createDate}" />
+							<productOrder
+								maximumQuantity="${each.quantity}" product="${each}" />
+						</row>
+					</template>
 				</grid>
 			</div>
 		</center>
 
 		<east title="Shopping Cart" size="30%" flex="true"
 			splittable="true" collapsible="true">
-			<div style="background:#D9E5EF; height:100%"
-				apply="demo.web.ui.ctrl.ShoppingCartViewCtrl">
+			<div apply="org.zkoss.bind.BindComposer"
+				viewModel="@id('vm') @init('demo.web.ui.ctrl.ShoppingCartViewModel')">
 
-				<listbox id="shoppingCartListbox">
+				<listbox id="shoppingCartListbox"
+					model="@load(vm.cartItems)"
+					selectedItem="@bind(vm.selectedItem)">
 					<listhead sizable="true">
 						<listheader label="Name" />
 						<listheader label="Price" />
@@ -37,63 +51,108 @@
 						<listheader label="subTotal" />
 						<listheader align="center" />
 					</listhead>
+					<template name="model" var="cartItem">
+						<listitem>
+							<listcell
+								label="@load(cartItem.product.name)" />
+							<listcell
+								label="@load(cartItem.product.price)" />
+							<listcell label="@load(cartItem.amount)" />
+							<listcell
+								label="@load(cartItem.product.price * cartItem.amount)"
+								style="word-wrap: word-break" />
+							<listcell>
+								<button
+									image="/image/DeleteCross-16x16.png"
+									onClick="@command('deleteOrder', cartItem=cartItem)" />
+							</listcell>
+						</listitem>
+					</template>
 					<listfoot>
-						<listfooter span="2" id="subtotalFooter"></listfooter>
-						<listfooter>
-							<button id="submitOrderBtn" label="submit" />
+						<listfooter span="2" id="subtotalFooter"
+							label="@load(vm.shoppingCart.totalPrice)">
 						</listfooter>
 						<listfooter>
-							<button id="clearBtn" label="clear" />
+							<button id="submitOrderBtn" label="submit"
+								onClick="@command('submitOrder')"
+								disabled="@load(empty vm.cartItems)" />
+						</listfooter>
+						<listfooter>
+							<button id="clearBtn" label="clear"
+								onClick="@command('clearOrders')"
+								disabled="@load(empty vm.cartItems)" />
 						</listfooter>
 					</listfoot>
 				</listbox>
-				<textbox id="descTxb" rows="10" width="200px"
-					value="Note for this order." />
-				<image id="cartItemImage" />
+				<vlayout>
+					<label value="Description" />
+					<textbox id="descTxb" rows="10" width="200px"
+						value="@bind(vm.orderNote)" hflex="true" />
+					<image id="cartItemImage"
+						image="@load(cartItem.product.imgPath)" hflex="true"/>
+				</vlayout>
 			</div>
 		</east>
 
 		<south size="250px" flex="true" border="0" splittable="true"
 			collapsible="true" style="overflow:scroll">
-			<div id="orderArea" style="background:#C6EAFD; height:100%"
-				apply="demo.web.ui.ctrl.DatabindingOrderViewCtrl">
+			<div id="orderArea" apply="org.zkoss.bind.BindComposer"
+				viewModel="@id('vm') @init('demo.web.ui.ctrl.OrderViewViewModel')">
+				<hlayout>
+					<vlayout hflex="1">
+						<listbox id="orderLibox"
+							model="@load(vm.orders)" selectedItem="@bind(vm.selectedItem)"
+							>
+							<listhead>
+								<listheader label="info" />
+								<listheader label="description" />
+								<listheader label="Sub Total" />
+							</listhead>
+							<template name="model" var="order">
+								<listitem>
+									<listcell
+										label="@load(order) @converter('demo.web.ui.OrderInfoTypeConverter')" />
+									<listcell
+										label="@load(order.description)" />
+									<listcell
+										label="@load(order.total)" />
+								</listitem>
+							</template>
+						</listbox>
 
-				<listbox id="orderLibox"
-					model="@{orderArea$composer.orders}" selectedItem="@{selectedX}">
-					<listhead>
-						<listheader label="info" />
-						<listheader label="description" />
-						<listheader label="Sub Total" />
-					</listhead>
+						<button id="cancelOrderBtn"
+							label="Cancel Selected Order"
+							disabled="@load(empty vm.selectedItem)"
+							onClick="@command('cancelOrder')" />
+					</vlayout>
 
-					<listitem self="@{each='order'}" value="@{order}">
-						<listcell
-							label="@{order, converter='demo.web.ui.OrderInfoTypeConverter'}" />
-						<listcell label="@{order.description}" />
-						<listcell label="@{order.total}" />
-					</listitem>
-				</listbox>
+					<grid id="orderItemsGrid"
+						model="@load(vm.selectedItem.items)" hflex="1">
+						<columns sizable="true">
+							<column label="Name" />
+							<column label="Quantity" />
+							<column label="Price" />
+							<column label="Sub Total" />
+						</columns>
+						<rows>
+							<template name="model" var="orderItem">
+								<row>
+									<label
+										value="@load(orderItem.name)" />
+									<label
+										value="@load(orderItem.quantity)" />
+									<label
+										value="@load(orderItem.price)" />
+									<label
+										value="@load(orderItem) @converter('demo.web.ui.OrderItemSubTotalTypeConverter')"
+										maxlength="8" />
+								</row>
+							</template>
+						</rows>
+					</grid>
+				</hlayout>
 
-				<grid id="orderItemsGrid" model="@{selectedX.items}">
-					<columns sizable="true">
-						<column label="Name" />
-						<column label="Quantity" />
-						<column label="Price" />
-						<column label="Sub Total" />
-					</columns>
-					<rows>
-						<row self="@{each='orderItem'}">
-							<label value="@{orderItem.name}" />
-							<label value="@{orderItem.quantity}" />
-							<label value="@{orderItem.price}" />
-							<label
-								value="@{orderItem, converter='demo.web.ui.OrderItemSubTotalTypeConverter'}"
-								maxlength="8" />
-						</row>
-					</rows>
-				</grid>
-				<button id="cancelOrderBtn"
-					label="Cancel Selected Order" />
+
 			</div>
 		</south>
 

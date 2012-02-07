@@ -32,19 +32,18 @@ public class ShoppingCart {
 		items.put(item.getProduct().getId(), item);
 	}
 
-	public void add(Product prod, int amount, AddToCartCallback callback)
+	public void add(Product prod, int amount)
 			throws OverQuantityException {
-
+		
 		CartItem item = this.getItem(prod.getId());
 		validate(item, prod, amount);
 		if (item == null) {
 			this.add(item = new CartItem(prod));
 			item.add(amount);
-			callback.afterAdd(true, item);
 		} else {
 			item.add(amount);
-			callback.afterAdd(false, item);
 		}
+		
 	}
 
 	private static void validate(CartItem item, Product prod, int amount)

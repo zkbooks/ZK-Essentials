@@ -1,28 +1,19 @@
 package demo.web.ui.ctrl;
 
-import static org.zkoss.zk.ui.event.Events.ON_CLICK;
-
-import java.text.SimpleDateFormat;
 import java.util.List;
 
-import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.bind.BindUtils;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.util.GenericForwardComposer;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Cell;
+import org.zkoss.zk.ui.select.SelectorComposer;
+import org.zkoss.zk.ui.select.annotation.Listen;
+import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
-import org.zkoss.zul.Image;
-import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModelList;
-import org.zkoss.zul.Row;
-import org.zkoss.zul.RowRenderer;
-import org.zkoss.zul.Spinner;
 
-import demo.model.ProductDAO;
+import demo.model.DAOs;
 import demo.model.bean.Product;
-import demo.web.ui.ShoppingCartCtrl;
+import demo.web.OverQuantityException;
 
 /**
  * @author zkessentials store
@@ -31,68 +22,42 @@ import demo.web.ui.ShoppingCartCtrl;
  *         index.zul
  * 
  */
-public class ProductViewCtrl extends GenericForwardComposer {
+public class ProductViewCtrl extends SelectorComposer<Div> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -4327599559929787819L;
 
+	@Wire
 	private Grid prodGrid;
 
 	@Override
-	public void doAfterCompose(Component comp) throws Exception {
+	public void doAfterCompose(Div comp) throws Exception {
 		super.doAfterCompose(comp);
 
-		ProductDAO prodDao = new ProductDAO();
-		List<Product> prods = prodDao.findAllAvailable();
+		List<Product> prods = DAOs.getProductDAO().findAllAvailable();
 
-		ListModelList prodModel = new ListModelList(prods);
+		ListModelList<Product> prodModel = new ListModelList<Product>(prods);
 		prodGrid.setModel(prodModel);
-		prodGrid.setRowRenderer(new RowRenderer() {
-			public void render(Row row, Object data) throws Exception {
-				final Product prod = (Product) data;
+	}
+	
+	@Listen("onAddProductOrder=#PrdoDiv #prodGrid row productOrder")
+	public void addProduct(Event fe) {
 
-				Image img = new Image(prod.getImgPath());
-				img.setWidth("70px");
-				img.setHeight("70px");
-				img.setParent(row);
-				new Label(prod.getName()).setParent(row);
-				new Label("" + prod.getPrice()).setParent(row);
-				new Label("" + prod.getQuantity()).setParent(row);
-				new Label(new SimpleDateFormat("yyyy/MM/dd hh:mm").format(prod
-						.getCreateDate())).setParent(row);
-				initOperation(prod).setParent(row);
-			}
+		if (!(fe.getTarget() instanceof ProductOrder)) {
+			return;
+		}
 
-			private Cell initOperation(final Product prod) {
-				Cell cell = new Cell();
-				final Spinner spinner = new Spinner(1);
-				spinner.setConstraint("min 1 max " + prod.getQuantity());
-				spinner.setParent(cell);
+		ProductOrder po = (ProductOrder) fe.getTarget();
 
-				Button button = new Button("add");
-				button.setImage("/image/ShoppingCart-16x16.png");
-				button.setParent(cell);
+		try {
+			UserUtils.getShoppingCart()
+					.add(po.getProduct(), po.getQuantity());
+		} catch (OverQuantityException e) {
+			po.setError(e.getMessage());
+		}
 
-				final Label errorLb = new Label();
-				errorLb.setParent(cell);
-
-				button.addEventListener(ON_CLICK, new EventListener() {
-					public void onEvent(Event event) throws Exception {
-						ShoppingCartCtrl ctrl = ShoppingCartViewCtrl
-								.getInstance(desktop);
-						try {
-							ctrl.addItem(prod, spinner.getValue());
-							errorLb.setValue("");
-						} catch (WrongValueException e) {
-							errorLb.setValue(e.getMessage());
-						}
-					}
-				});
-				return cell;
-			}
-		});
-
+		BindUtils.postGlobalCommand(null, null, "updateShoppingCart", null);
 	}
 }
