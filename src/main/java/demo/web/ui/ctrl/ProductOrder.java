@@ -5,12 +5,11 @@ import java.util.HashMap;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zk.ui.select.Selectors;
+import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
-import org.zkoss.zul.Button;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Spinner;
@@ -26,9 +25,6 @@ public class ProductOrder extends Cell implements IdSpace, AfterCompose {
 
 	@Wire
 	Spinner spnQuantity;
-
-	@Wire
-	Button btnAdd;
 
 	@Wire
 	Label lblError;
@@ -48,18 +44,15 @@ public class ProductOrder extends Cell implements IdSpace, AfterCompose {
 		Selectors.wireVariables(this, this, null);
 		Selectors.wireComponents(this, this, false);
 		Selectors.wireEventListeners(this, this);
-
-		btnAdd.addEventListener(Events.ON_CLICK,
-				new EventListener<Event>() {
-					public void onEvent(Event event)
-							throws Exception {
-						Events.postEvent(ProductOrder.this, new AddProductOrderEvent());
-					}
-				});
 	}
 
 	private int maximumQuantity;
 	private Product product;
+	
+	@Listen("onClick=#btnAdd")
+	public void addProduct() {
+		Events.postEvent(this, new AddProductOrderEvent());
+	}
 
 	public int getMaximumQuantity() {
 		return maximumQuantity;
