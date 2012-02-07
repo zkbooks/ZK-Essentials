@@ -2,7 +2,6 @@ package demo.web.ui.ctrl;
 
 import java.util.List;
 
-import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.GlobalCommand;
@@ -45,7 +44,6 @@ public class ShoppingCartViewModel {
 	@NotifyChange({"cartItems", "shoppingCart", "orderNote"})
 	public void submitOrder() {
 		DAOs.getOrderDAO().createOrder(UserUtils.getCurrentUserId(), getCartItems(), getOrderNote());
-		BindUtils.postGlobalCommand(null, null, "updateOrders", null);
 		clearOrders();
 	}
 	
