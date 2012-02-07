@@ -29,7 +29,7 @@ public class OrderDAO {
 	public List<Order> findAll() {
 		Session session = StoreHibernateUtil.openSession();
 		Query query = session.createQuery("from Order");
-		List orders = query.list();
+		List<Order> orders = query.list();
 
 		session.close();
 		return orders;
@@ -41,7 +41,7 @@ public class OrderDAO {
 		Transaction t = session.beginTransaction();
 		Criteria criteria = session.createCriteria(Order.class).add(
 				Restrictions.eq("userId", userId));
-		List orders = criteria.list();
+		List<Order> orders = criteria.list();
 		t.commit();
 		session.close();
 
