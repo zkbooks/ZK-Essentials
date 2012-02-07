@@ -3,13 +3,8 @@ package demo.web.ui.ctrl;
 import java.util.List;
 
 import org.zkoss.bind.BindUtils;
-import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.select.SelectorComposer;
-import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Div;
@@ -45,37 +40,16 @@ public class ProductViewCtrl extends SelectorComposer<Div> {
 
 		ListModelList<Product> prodModel = new ListModelList<Product>(prods);
 		prodGrid.setModel(prodModel);
-		
-		MouseEvent me = new MouseEvent("onBlah", prodGrid);
-		Events.postEvent(prodGrid, me);
 	}
 	
-	//this is dirty, remove after the selector composer fix
-	@Listen("onBlah=#prodGrid")
-	public void onBlah$prodGrid() {
-		List<Component> components = Selectors.find(prodGrid, "#PrdoDiv #prodGrid row productOrder");
-		
-		for(Component c : components) {
-			if(c instanceof ProductOrder) {
-				final ProductOrder po = (ProductOrder)c;
-				
-				po.btnAdd.addEventListener(Events.ON_CLICK, new EventListener<Event>(){
-					public void onEvent(Event event) throws Exception {
-						ProductViewCtrl.this.addProduct(po);
-					}
-				});
-			}
-		}
-	}
-	
-	@Listen("onAddProductOrder=#PrdoDiv prodGrid row productOrder")
-	public void addProduct(/*Event fe*/ProductOrder po) {
+	@Listen("onAddProductOrder=#PrdoDiv #prodGrid row productOrder")
+	public void addProduct(Event fe) {
 
-		/*if (!(fe.getTarget() instanceof ProductOrder)) {
+		if (!(fe.getTarget() instanceof ProductOrder)) {
 			return;
 		}
 
-		ProductOrder po = (ProductOrder) fe.getTarget();*/
+		ProductOrder po = (ProductOrder) fe.getTarget();
 
 		try {
 			UserUtils.getShoppingCart()

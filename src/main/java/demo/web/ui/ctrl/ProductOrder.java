@@ -53,9 +53,7 @@ public class ProductOrder extends Cell implements IdSpace, AfterCompose {
 				new EventListener<Event>() {
 					public void onEvent(Event event)
 							throws Exception {
-						//dirty fix, in order for the dirty fix to work we must first remove
-						//the posted event as it is not needed.
-						//Events.postEvent(new AddProductOrderEvent());
+						Events.postEvent(ProductOrder.this, new AddProductOrderEvent());
 					}
 				});
 	}
